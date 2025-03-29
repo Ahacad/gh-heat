@@ -20,3 +20,16 @@ colored = "2.0"
 tokio = { version = "1.28", features = ["full"] }
 regex = "1.10"
 rand = "0.8"
+
+[package.metadata.release]
+pre-release-commit-message = "release: v{{version}}"
+tag-message = "Release v{{version}}"
+tag-name = "v{{version}}"
+sign-commit = true
+sign-tag = true
+push = true
+publish = false
+pre-release-replacements = [
+  {file="README.md", search="gh-heat [0-9]+\\.[0-9]+\\.[0-9]+", replace="gh-heat {{version}}"},
+  {file="PKGBUILD", search="pkgver=.*", replace="pkgver={{version}}"}
+]
