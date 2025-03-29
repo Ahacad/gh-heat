@@ -19,8 +19,9 @@ VERSION=$1
 # Update version
 echo "Releasing version $VERSION..."
 
-# Dry run first
-cargo release $VERSION --no-publish --no-push --no-tag --execute
+# Dry run first to check if everything is in order
+echo "Running dry run..."
+cargo release --no-publish --no-push --no-tag --dry-run $VERSION
 
 # Ask for confirmation before publishing
 read -p "Ready to create a release v$VERSION? This will push to GitHub. (y/n) " -n 1 -r

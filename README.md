@@ -1,4 +1,4 @@
-# gh-heat
+# gh-heat 0.1.0
 
 A terminal GitHub contribution heatmap generator written in Rust. View anyone's GitHub contribution activity right in your terminal!
 
