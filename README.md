@@ -18,6 +18,14 @@ A terminal GitHub contribution heatmap generator written in Rust. View anyone's 
 cargo install gh-heat
 ```
 
+### For Arch Linux Users (via AUR)
+
+```bash
+yay -S gh-heat
+# or
+paru -S gh-heat
+```
+
 ### Building from source
 
 ```bash
@@ -62,6 +70,35 @@ export GITHUB_TOKEN=your_token_here
 
 - Rust 1.56 or later
 - A terminal with RGB color support (for color mode)
+
+## Development
+
+### Automated Release Process
+
+This project uses:
+- `cargo-release` to manage version bumping and tag creation
+- GitHub Actions to automatically build binaries for multiple platforms
+- Automated deployment to the Arch User Repository (AUR)
+
+To create a new release:
+
+```bash
+./release.sh 0.1.1  # Replace with the new version number
+```
+
+This will:
+1. Update version numbers in Cargo.toml and README.md
+2. Create a Git commit and tag
+3. Push to GitHub, triggering automated builds
+4. Deploy the new version to AUR automatically
+
+### Setting Up AUR Deployment
+
+For AUR deployment to work, you need to add these GitHub Secrets:
+
+- `AUR_USERNAME`: Your AUR username
+- `AUR_EMAIL`: Email associated with your AUR account
+- `AUR_SSH_PRIVATE_KEY`: SSH private key for AUR access
 
 ## License
 

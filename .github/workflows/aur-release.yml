@@ -1,0 +1,55 @@
+name: AUR Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  aur-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Download source tarball
+        run: |
+          curl -L -o gh-heat-${{ steps.get_version.outputs.VERSION }}.tar.gz \
+            https://github.com/${{ github.repository }}/archive/v${{ steps.get_version.outputs.VERSION }}.tar.gz
+
+      - name: Calculate SHA256 sum
+        id: sha256
+        run: |
+          SHA256=$(sha256sum gh-heat-${{ steps.get_version.outputs.VERSION }}.tar.gz | cut -d ' ' -f1)
+          echo "SHA256=$SHA256" >> $GITHUB_OUTPUT
+
+      - name: Update PKGBUILD
+        run: |
+          # Create updated PKGBUILD content
+          sed -i "s/pkgver=.*/pkgver=${{ steps.get_version.outputs.VERSION }}/" PKGBUILD
+          sed -i "s/sha256sums=('.*')/sha256sums=('${{ steps.sha256.outputs.SHA256 }}')/" PKGBUILD
+          cat PKGBUILD
+
+      # Use a Docker container with makepkg to generate .SRCINFO
+      - name: Generate .SRCINFO
+        uses: docker://archlinux:base-devel
+        with:
+          entrypoint: bash
+          args: -c "pacman -Syu --noconfirm && makepkg --printsrcinfo > .SRCINFO && cat .SRCINFO"
+
+      - name: Publish AUR package
+        uses: KSXGitHub/github-actions-deploy-aur@v2.7.0
+        with:
+          pkgname: gh-heat
+          pkgbuild: ./PKGBUILD
+          srcinfo: ./.SRCINFO  # Explicitly provide the .SRCINFO file
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "Update to v${{ steps.get_version.outputs.VERSION }}"
+          allow_empty_commits: false
