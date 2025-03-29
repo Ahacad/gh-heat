@@ -2,9 +2,9 @@
 name = "gh-heat"
 version = "0.1.0"
 edition = "2021"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["ahacad <ahacadev@gmail.com>"]
 description = "A terminal heatmap generator for GitHub user contributions"
-repository = "https://github.com/yourusername/gh-heat"
+repository = "https://github.com/ahacad/gh-heat"
 license = "MIT"
 keywords = ["github", "heatmap", "cli", "terminal", "contributions"]
 
